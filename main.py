@@ -7,11 +7,16 @@ import asyncio
 from keep_alive import keep_alive
 
 load_dotenv()
-token = os.getenv('DISCORD_TOKEN')
+token = os.getenv("DISCORD_TOKEN")
 
-keep_alive()
+if not token:
+    raise ValueError("DISCORD_TOKEN not found in environment variables")
 
-handler = logging.FileHandler(filename='discord.log', encoding = 'utf-8', mode= 'w')
+print("TOKEN:", bool(token))
+
+
+
+
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
@@ -326,4 +331,11 @@ async def on_command_error(ctx, error):
     print(error)
 
 
-bot.run(token, log_handler = handler, log_level = logging.DEBUG)
+print("TOKEN EXISTS:", bool(token))
+
+try:
+    print("BOT STARTING...")
+    keep_alive()
+    bot.run(token)
+except Exception as e:
+    print("BOT FAILED TO START:", e)
